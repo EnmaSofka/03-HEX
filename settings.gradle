@@ -1,14 +1,13 @@
-rootProject.name = 'ArquitecturaHexagonal'
+rootProject.name = 'architecture-hex'
 
-include ':app-service'
 include ':model'
 include ':use-cases'
+include ':app-service'
 include ':postgres-repository'
 include ':web'
 
-findProject(':app-service').projectDir = file('./applications/app-service')
 findProject(':model').projectDir = file('./domain/model')
 findProject(':use-cases').projectDir = file('./domain/usecases')
+findProject(':app-service').projectDir = file('./applications/app-service')
 findProject(':postgres-repository').projectDir = file('./infrastructure/driven-adapters/postgres-repository')
 findProject(':web').projectDir = file('./infrastructure/entry-points/web')
-
