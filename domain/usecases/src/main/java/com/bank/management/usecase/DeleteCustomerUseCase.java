@@ -1,9 +1,10 @@
 package com.bank.management.usecase;
 
 import com.bank.management.Customer;
+import com.bank.management.exception.CustomerNotFoundException;
 import com.bank.management.gateway.CustomerRepository;
 
-import java.util.List;
+import java.util.Optional;
 
 public class DeleteCustomerUseCase{
 
@@ -13,8 +14,13 @@ public class DeleteCustomerUseCase{
         this.customerRepository = customerRepository;
     }
 
-    public void apply(Long id) {
-        Customer customer = customerRepository.findById(id);
+    public boolean apply(Long id) {
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+        if (customerOptional.isEmpty()) {
+            throw new CustomerNotFoundException(id);
+        }
+        Customer customer = customerOptional.get();
         customerRepository.delete(customer);
+        return true;
     }
 }

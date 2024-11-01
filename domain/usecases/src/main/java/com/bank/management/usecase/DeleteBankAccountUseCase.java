@@ -1,23 +1,27 @@
 package com.bank.management.usecase;
 
-import com.bank.management.BankAccount;
-import com.bank.management.Customer;
-import com.bank.management.gateway.BankAccountRepository;
-import com.bank.management.gateway.CustomerRepository;
+import com.bank.management.Account;
+import com.bank.management.exception.BankAccountNotFoundException;
+import com.bank.management.gateway.AccountRepository;
 
-import java.util.Random;
+import java.util.Optional;
 
 
 public class DeleteBankAccountUseCase {
 
-    private final BankAccountRepository bankAccountRepository;
+    private final AccountRepository bankAccountRepository;
 
-    public DeleteBankAccountUseCase(BankAccountRepository bankAccountRepository) {
+    public DeleteBankAccountUseCase(AccountRepository bankAccountRepository) {
         this.bankAccountRepository = bankAccountRepository;
     }
 
-    public void apply(Long id) {
+    public boolean apply(Long id) {
+        Optional<Account> accountOptional = bankAccountRepository.findById(id);
+        if (accountOptional.isEmpty()) {
+            throw new BankAccountNotFoundException();
+        }
         bankAccountRepository.delete(id);
+        return true;
     }
 
 }

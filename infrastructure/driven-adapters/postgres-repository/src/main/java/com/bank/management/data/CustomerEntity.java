@@ -1,28 +1,35 @@
 package com.bank.management.data;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "customer")
 public class CustomerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String email;
     private String username;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private List<BankAccountEntity> accounts;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<AccountEntity> accounts;
+
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private Date createdAt;
 
     public CustomerEntity() {}
 
-    public CustomerEntity(String name, String email) {
-        this.name = name;
-        this.email = email;
+    public CustomerEntity(Long id, String username) {
+        this.username = username;
+        this.id = id;
     }
 
     // Getters y Setters
@@ -35,27 +42,19 @@ public class CustomerEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<BankAccountEntity> getAccounts() {
+    public List<AccountEntity> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<BankAccountEntity> accounts) {
+    public void setAccounts(List<AccountEntity> accounts) {
         this.accounts = accounts;
     }
 

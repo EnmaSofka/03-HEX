@@ -8,8 +8,9 @@ import java.util.Optional;
 public interface CustomerRepository {
 
     List<Customer> findAll();
-    Customer findById(Long id);
-    Customer save(Customer customer);
+    Optional<Customer> findById(Long id);
+    Optional<Customer> save(Customer customer);
     Optional<Customer> findByUsername(String username);
-    void delete(Customer customer);
+    boolean delete(Customer customer);
+    Optional<Customer> findByNumber(String accountNumber);
 }

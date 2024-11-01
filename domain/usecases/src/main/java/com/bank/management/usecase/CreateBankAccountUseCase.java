@@ -1,41 +1,44 @@
 package com.bank.management.usecase;
 
-import com.bank.management.BankAccount;
+import com.bank.management.Account;
 import com.bank.management.Customer;
-import com.bank.management.gateway.BankAccountRepository;
+import com.bank.management.exception.BankAccountAlreadyExistsException;
+import com.bank.management.exception.CustomerNotFoundException;
+import com.bank.management.gateway.AccountRepository;
 import com.bank.management.gateway.CustomerRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 
 public class CreateBankAccountUseCase {
 
-    private final BankAccountRepository bankAccountRepository;
+    private final AccountRepository bankAccountRepository;
     private final CustomerRepository customerRepository;
 
-    public CreateBankAccountUseCase(BankAccountRepository bankAccountRepository, CustomerRepository customerRepository) {
+    public CreateBankAccountUseCase(AccountRepository bankAccountRepository, CustomerRepository customerRepository) {
         this.bankAccountRepository = bankAccountRepository;
         this.customerRepository = customerRepository;
     }
 
 
-    public BankAccount apply(BankAccount account, Customer customer) {
+    public Account apply(Account account, Customer customer) {
 
-        Customer customerFound = customerRepository.findById(customer.getId());
-        if (customerFound == null) {
-            throw new RuntimeException("Not found customer: " + customer.getId());
+        Optional<Customer> customerOptional = customerRepository.findById(customer.getId());
+        if (customerOptional.isEmpty()) {
+            throw new CustomerNotFoundException(customer.getId());
         }
+        Customer customerFound = customerOptional.get();
 
-        account.setAccountNumber(generateAccountNumber());
+        Account accountToCreate = new Account.Builder()
+                .number(generateAccountNumber())
+                .amount(account.getAmount())
+                .build();
 
-        List<BankAccount> existingAccounts = customerFound.getAccounts();
-        existingAccounts.add(account);
-        customerFound.setAccounts(existingAccounts);
-
-        customerRepository.save(customerFound);
-
-        return account;
+        accountToCreate.setCustomer(customerFound);
+        Optional<Account> accountCreated = bankAccountRepository.save(accountToCreate);
+        return accountCreated.orElse(null);
     }
 
     private String generateAccountNumber() {

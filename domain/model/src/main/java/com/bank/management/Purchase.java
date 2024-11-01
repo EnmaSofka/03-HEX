@@ -3,32 +3,59 @@ package com.bank.management;
 import java.math.BigDecimal;
 
 public class Purchase {
-    private String accountNumber;
-    private BigDecimal amount;
-    private String type; // "PHYSICAL" or "ONLINE"
+    private final String accountNumber;
+    private final BigDecimal amount;
+    private final String type; // "PHYSICAL" or "ONLINE"
 
-    // Getters and Setters
-    public String getAccountNumber() {
-        return accountNumber;
+    private Purchase(Builder builder) {
+        this.accountNumber = builder.accountNumber;
+        this.amount = builder.amount;
+        this.type = builder.type;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
     public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
     public String getType() {
         return type;
     }
 
-    public void setPurchaseType(String purchaseType) {
-        this.type = purchaseType;
+    public static class Builder {
+        private String accountNumber;
+        private BigDecimal amount;
+        private String type; // "PHYSICAL" or "ONLINE"
+
+        public Builder accountNumber(String accountNumber) {
+            this.accountNumber = accountNumber;
+            return this;
+        }
+
+        public Builder amount(BigDecimal amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder type(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Purchase build() {
+            return new Purchase(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", amount=" + amount +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

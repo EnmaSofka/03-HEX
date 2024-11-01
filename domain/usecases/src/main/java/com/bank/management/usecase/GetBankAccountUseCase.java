@@ -1,23 +1,26 @@
 package com.bank.management.usecase;
 
-import com.bank.management.BankAccount;
-import com.bank.management.Customer;
-import com.bank.management.gateway.BankAccountRepository;
-import com.bank.management.gateway.CustomerRepository;
+import com.bank.management.Account;
+import com.bank.management.exception.BankAccountNotFoundException;
+import com.bank.management.gateway.AccountRepository;
 
-import java.util.Random;
+import java.util.Optional;
 
 
 public class GetBankAccountUseCase {
 
-    private final BankAccountRepository bankAccountRepository;
+    private final AccountRepository bankAccountRepository;
 
-    public GetBankAccountUseCase(BankAccountRepository bankAccountRepository) {
+    public GetBankAccountUseCase(AccountRepository bankAccountRepository) {
         this.bankAccountRepository = bankAccountRepository;
     }
 
-    public BankAccount apply(Long id) {
-        return bankAccountRepository.findById(id);
+    public Account apply(Long id) {
+        Optional<Account> accountOptional = bankAccountRepository.findById(id);
+        if (accountOptional.isEmpty()) {
+            throw new BankAccountNotFoundException();
+        }
+        return accountOptional.get();
     }
 
 }

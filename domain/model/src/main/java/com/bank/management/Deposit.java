@@ -3,50 +3,73 @@ package com.bank.management;
 import java.math.BigDecimal;
 
 public class Deposit {
-    private Long customerId;
-    private String accountNumber;
-    private BigDecimal amount;
-    private String type;
+    private final Long customerId;
+    private final String accountNumber;
+    private final BigDecimal amount;
+    private final String type;
 
-    public Deposit() {}
-
-    public Deposit(Long customerId, String accountNumber, BigDecimal amount, String type) {
-        this.customerId = customerId;
-        this.accountNumber = accountNumber;
-        this.amount = amount;
-        this.type = type;
+    private Deposit(Builder builder) {
+        this.customerId = builder.customerId;
+        this.accountNumber = builder.accountNumber;
+        this.amount = builder.amount;
+        this.type = builder.type;
     }
 
-    // Getters and setters
+    // Getters
     public Long getCustomerId() {
         return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
     }
 
     public String getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public static class Builder {
+        private Long customerId;
+        private String accountNumber;
+        private BigDecimal amount;
+        private String type;
+
+        public Builder customerId(Long customerId) {
+            this.customerId = customerId;
+            return this;
+        }
+
+        public Builder accountNumber(String accountNumber) {
+            this.accountNumber = accountNumber;
+            return this;
+        }
+
+        public Builder amount(BigDecimal amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder type(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Deposit build() {
+            return new Deposit(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Deposit{" +
+                "customerId=" + customerId +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", amount=" + amount +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

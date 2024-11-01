@@ -27,28 +27,36 @@ public class CustomerAdapter implements CustomerRepository {
     }
 
     @Override
-    public Customer findById(Long id) {
-        return customerRepository.findById(id)
+    public Optional<Customer> findById(Long id) {
+
+        return Optional.ofNullable(customerRepository.findById(id)
                 .map(CustomerMapper::toDomain)
-                .orElse(null);
+                .orElse(null));
     }
 
     @Override
-    public Customer save(Customer customer) {
+    public Optional<Customer> save(Customer customer) {
         CustomerEntity entity = CustomerMapper.toEntity(customer);
         CustomerEntity savedEntity = customerRepository.save(entity);
-        return CustomerMapper.toDomain(savedEntity);
+        return Optional.ofNullable(CustomerMapper.toDomain(savedEntity));
     }
 
     @Override
     public Optional<Customer> findByUsername(String username) {
+
         return Optional.ofNullable(CustomerMapper.toDomain(customerRepository.findByUsername(username)));
 
     }
 
     @Override
-    public void delete(Customer customer) {
+    public boolean delete(Customer customer) {
         CustomerEntity entity = CustomerMapper.toEntity(customer);
         customerRepository.delete(entity);
+        return true;
+    }
+
+    @Override
+    public Optional<Customer> findByNumber(String accountNumber) {
+        return Optional.ofNullable(CustomerMapper.toDomain(customerRepository.findByAccountNumber(accountNumber)));
     }
 }

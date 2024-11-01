@@ -1,8 +1,10 @@
 package com.bank.management.usecase;
 
 import com.bank.management.Customer;
+import com.bank.management.exception.CustomerAlreadyExistsException;
 import com.bank.management.gateway.CustomerRepository;
 
+import java.sql.Date;
 import java.util.Optional;
 
 public class CreateCustomerUseCase {
@@ -13,10 +15,10 @@ public class CreateCustomerUseCase {
         this.customerRepository = customerRepository;
     }
 
-    public Customer apply(Customer customer) {
+    public Optional<Customer> apply(Customer customer) {
         Optional<Customer> existingCustomer = customerRepository.findByUsername(customer.getUsername());
         if (existingCustomer.isPresent()) {
-            throw new RuntimeException("Customer already exists");
+            throw new CustomerAlreadyExistsException(customer.getUsername());
         }
 
         return customerRepository.save(customer);

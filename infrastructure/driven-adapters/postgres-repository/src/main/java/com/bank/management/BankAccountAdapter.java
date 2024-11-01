@@ -1,8 +1,8 @@
 package com.bank.management;
 
 import com.bank.management.config.PostgresBankAccountRepository;
-import com.bank.management.data.BankAccountEntity;
-import com.bank.management.gateway.BankAccountRepository;
+import com.bank.management.data.AccountEntity;
+import com.bank.management.gateway.AccountRepository;
 import com.bank.management.mapper.BankAccountMapper;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class BankAccountAdapter implements BankAccountRepository {
+public class BankAccountAdapter implements AccountRepository {
 
     private final PostgresBankAccountRepository bankAccountRepository;
 
@@ -20,35 +20,39 @@ public class BankAccountAdapter implements BankAccountRepository {
     }
 
     @Override
-    public BankAccount findById(Long id) {
-        Optional<BankAccountEntity> bankAccountFound = bankAccountRepository.findById(id);
-        return bankAccountFound.map(BankAccountMapper::toDomain).orElse(null);
+    public Optional<Account> findById(Long id) {
+        Optional<AccountEntity> bankAccountFound = bankAccountRepository.findById(id);
+        return bankAccountFound.map(BankAccountMapper::toDomain);
     }
 
     @Override
-    public BankAccount save(BankAccount account) {
-        BankAccountEntity entity = BankAccountMapper.toEntity(account);
-        BankAccountEntity savedEntity = bankAccountRepository.save(entity);
-        return BankAccountMapper.toDomain(savedEntity);
+    public Optional<Account> save(Account account) {
+        AccountEntity entity = BankAccountMapper.toEntity(account);
+        AccountEntity savedEntity = bankAccountRepository.save(entity);
+        Account savedDomain = BankAccountMapper.toDomain(savedEntity);
+        return Optional.ofNullable(savedDomain);
     }
 
     @Override
-    public void delete(Long id) {
-        Optional<BankAccountEntity> bankAccountFound = bankAccountRepository.findById(id);
+    public boolean delete(Long id) {
+        Optional<AccountEntity> bankAccountFound = bankAccountRepository.findById(id);
+        if (bankAccountFound.isEmpty()) {return false;}
         bankAccountRepository.delete(bankAccountFound.get());
+        return true;
     }
 
     @Override
-    public BankAccount findByAccountNumber(String accountNumber) {
-        Optional<BankAccountEntity> bankAccountEntityOptional = bankAccountRepository.findByAccountNumber(accountNumber);
-        BankAccountEntity bankAccountEntity  = bankAccountEntityOptional.get();
-        BankAccount bankAccount = BankAccountMapper.toDomain(bankAccountEntity);
-        return bankAccount;
+    public Optional<Account> findByNumber(String accountNumber) {
+        Optional<AccountEntity> bankAccountEntityOptional = bankAccountRepository.findByNumber(accountNumber);
+        if (bankAccountEntityOptional.isEmpty()) {return Optional.empty();}
+        AccountEntity bankAccountEntity  = bankAccountEntityOptional.get();
+        Account account = BankAccountMapper.toDomain(bankAccountEntity);
+        return Optional.ofNullable(account);
     }
 
     @Override
-    public List<BankAccount> findByCustomerId(Long customerId) {
-        List<BankAccountEntity> bankAccountEntities = bankAccountRepository.findByCustomerId(customerId);
+    public List<Account> findByCustomerId(Long customerId) {
+        List<AccountEntity> bankAccountEntities = bankAccountRepository.findByCustomerId(customerId);
         return bankAccountEntities.stream()
                 .map(BankAccountMapper::toDomain)
                 .collect(Collectors.toList());

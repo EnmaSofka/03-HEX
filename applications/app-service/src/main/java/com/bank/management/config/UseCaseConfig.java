@@ -16,8 +16,4 @@ import org.springframework.context.annotation.FilterType;
 )
 public class UseCaseConfig {
 
-       /* @Bean
-        public GetAllCustomersUseCase getAllCustomersUseCase(CustomerRepository customerRepository) {
-                return new GetAllCustomersUseCase(customerRepository);
-        }*/
 }

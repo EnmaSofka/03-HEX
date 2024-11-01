@@ -10,13 +10,11 @@ public class CustomerMapper {
         if (entity == null) {
             return null;
         }
-        Customer customer = new Customer();
-        customer.setId(entity.getId());
-        customer.setName(entity.getName());
-        customer.setEmail(entity.getEmail());
-        customer.setUsername(entity.getUsername());
+        Customer customer = new Customer.Builder()
+                .id(entity.getId())
+                .username(entity.getUsername())
+                .build();
 
-        // Convertir las cuentas bancarias relacionadas
         if (entity.getAccounts() != null) {
             customer.setAccounts(entity.getAccounts().stream()
                     .map(BankAccountMapper::toDomain)
@@ -31,11 +29,8 @@ public class CustomerMapper {
         }
         CustomerEntity entity = new CustomerEntity();
         entity.setId(customer.getId());
-        entity.setName(customer.getName());
-        entity.setEmail(customer.getEmail());
         entity.setUsername(customer.getUsername());
 
-        // Convertir las cuentas bancarias relacionadas
         if (customer.getAccounts() != null) {
             entity.setAccounts(customer.getAccounts().stream()
                     .map(BankAccountMapper::toEntity)

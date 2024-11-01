@@ -1,10 +1,11 @@
 package com.bank.management;
 
+import com.bank.management.data.BankAccountDTO;
 import com.bank.management.usecase.GetAccountsByCustomerUseCase;
-import com.bank.management.usecase.GetBankAccountUseCase;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/bank-accounts/customer")
@@ -17,9 +18,15 @@ public class GetAccountsByCustomerIdController {
     }
 
     @GetMapping("/{id}")
-    public List<BankAccount> getBankAccountByCustomer(@PathVariable Long id) {
+    public List<BankAccountDTO> getBankAccountByCustomer(@PathVariable Long id) {
+        List<Account> accounts = getAccountsByCustomerUseCase.apply(id);
 
-        return getAccountsByCustomerUseCase.apply(id);
+        return accounts.stream()
+                .map(account -> new BankAccountDTO.Builder()
+                        .number(account.getNumber())
+                        .amount(account.getAmount())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

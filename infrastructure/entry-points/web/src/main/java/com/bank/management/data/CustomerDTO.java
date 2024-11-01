@@ -1,48 +1,36 @@
-package com.bank.account.management.model.dto;
+package com.bank.management.data;
 
+/**
+ * Data Transfer Object for Customer.
+ */
 public class CustomerDTO {
+    private final String username;
 
-    private Long id;
-    private String name;
-    private String email;
-    private String username;
-
-    // Constructor
-    public CustomerDTO() {}
-
-    public CustomerDTO(Long id, String name, String email, String username) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.username = username;
+    private CustomerDTO(Builder builder) {
+        this.username = builder.username;
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public static class Builder {
+        private String username;
+
+        public Builder setUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public CustomerDTO build() {
+            return new CustomerDTO(this);
+        }
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return "CustomerDTO{" +
+                "username='" + username + '\'' +
+                '}';
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() { return username; }
-
-    public void setUsername(String username) { this.username = username; }
 }

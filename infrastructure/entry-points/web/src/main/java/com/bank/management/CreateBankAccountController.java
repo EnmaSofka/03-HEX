@@ -1,8 +1,10 @@
 package com.bank.management;
 
+import com.bank.management.data.RequestCreateAccountDTO;
+import com.bank.management.data.ResponseCreateAccountDTO;
 import com.bank.management.usecase.CreateBankAccountUseCase;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.bank.account.management.model.dto.CreateAccountDTO;
 
 @RestController
 @RequestMapping("/api/v1/bank-accounts")
@@ -15,15 +17,17 @@ public class CreateBankAccountController {
     }
 
     @PostMapping
-    public BankAccount createCustomer(@RequestBody CreateAccountDTO createAccount) {
+    public ResponseEntity<ResponseCreateAccountDTO> createAccount(@RequestBody RequestCreateAccountDTO createAccount) {
 
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setBalance(createAccount.getBalance());
+        Account accountDomain = new Account.Builder().amount(createAccount.getAmount()).build();
 
-        Customer customer = new Customer();
-        customer.setId(createAccount.getCustomerId());
+        Customer customerDomain = new Customer.Builder().id(createAccount.getCustomerId()).build();
 
-        return createBankAccountUseCase.apply(bankAccount, customer);
+        Account accountCreated = createBankAccountUseCase.apply(accountDomain, customerDomain);
+
+        ResponseCreateAccountDTO response = new ResponseCreateAccountDTO.Builder().number(accountCreated.getNumber()).message("Account created").build();
+
+        return ResponseEntity.ok(response);
     }
 
 }

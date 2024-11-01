@@ -1,10 +1,13 @@
 package com.bank.management;
 
+import com.bank.management.data.RequestCreateCustomerDTO;
+import com.bank.management.data.ResponseCreateCustomerDTO;
 import com.bank.management.usecase.CreateCustomerUseCase;
-import com.bank.management.usecase.GetAllCustomersUseCase;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/v1/customers")
@@ -17,9 +20,19 @@ public class CreateCustomerController {
     }
 
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<ResponseCreateCustomerDTO> createCustomer(@RequestBody RequestCreateCustomerDTO RequestCustomerDTO) {
 
-        return createCustomerUseCase.apply(customer);
+        Customer customerDomain = new Customer.Builder().username(RequestCustomerDTO.getUsername()).build();
+        Optional<Customer> customerCreated = createCustomerUseCase.apply(customerDomain);
+
+        return customerCreated.map(customer -> ResponseEntity.ok(new ResponseCreateCustomerDTO.Builder()
+                .username(customer.getUsername())
+                .message("Customer created")
+                .build())).orElseGet(() -> ResponseEntity.badRequest()
+                .body(new ResponseCreateCustomerDTO.Builder()
+                        .username("")
+                        .message("Customer not created")
+                        .build()));
     }
 
 }

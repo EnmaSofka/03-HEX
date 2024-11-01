@@ -1,4 +1,4 @@
-package com.bank.account.management.model.dto;
+package com.bank.management.data;
 
 import java.math.BigDecimal;
 
@@ -6,59 +6,46 @@ import java.math.BigDecimal;
  * Data Transfer Object for Bank Account.
  */
 public class BankAccountDTO {
-    private Long id;
-    private Long customerId;
-    private String accountNumber;
-    private BigDecimal balance;
+    private final String number;
+    private final BigDecimal amount;
 
-    public BankAccountDTO() {}
-
-    public BankAccountDTO(Long id, Long customerId, String accountNumber, BigDecimal balance) {
-        this.id = id;
-        this.customerId = customerId;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
+    private BankAccountDTO(Builder builder) {
+        this.number = builder.number;
+        this.amount = builder.amount;
     }
 
-    public Long getId() {
-        return id;
+    public String getNumber() {
+        return number;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public Long getCustomerId() {
-        return customerId;
-    }
+    public static class Builder {
+        private String number;
+        private BigDecimal amount;
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
+        public Builder number(String number) {
+            this.number = number;
+            return this;
+        }
 
-    public String getAccountNumber() {
-        return accountNumber;
-    }
+        public Builder amount(BigDecimal amount) {
+            this.amount = amount;
+            return this;
+        }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+        public BankAccountDTO build() {
+            return new BankAccountDTO(this);
+        }
     }
 
     @Override
     public String toString() {
         return "BankAccountDTO{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", balance=" + balance +
+                "number='" + number + '\'' +
+                ", amount=" + amount +
                 '}';
     }
 }
